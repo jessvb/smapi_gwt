@@ -9,8 +9,8 @@ project](http://ant.apache.org/).  Ant uses the generated `build.xml` file
 which describes exactly how to build your project.  This file has been tested
 to work against Ant 1.7.1.
 
-Before you build your project, make sure to change the `gwt.sdk` path in the build file, which looks something like this:
-`<property name="gwt.sdk" location="/path/to/sdk/folder" />`. (Change the `location` field to be the path containing your [GWT SDK, which can be downloaded here](http://www.gwtproject.org/download.html).)
+Before you build your project, change the `build.xml.template` filename to `build.xml`. Also change the `gwt.sdk` path in the build file (which looks something like this:
+`<property name="gwt.sdk" location="/path/to/gwt/sdk/folder" />`) to contain the path of your GWT SDK.  (The [GWT SDK can be downloaded here](http://www.gwtproject.org/download.html).)
 
 The following assumes `ant` is on your command
 line path.
