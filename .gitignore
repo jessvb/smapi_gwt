@@ -84,3 +84,8 @@ Temporary Items
 
 ### Other files ###
 build.xml
+client-id.js
+*.cache.js
+compilation-mappings.txt
+testsmapijava.devmode.js
+testsmapijava.nocache.js
