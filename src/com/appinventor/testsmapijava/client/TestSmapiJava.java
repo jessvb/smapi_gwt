@@ -39,7 +39,7 @@ public class TestSmapiJava implements EntryPoint {
   /**
    * The url where the php code lives and serves up json callbacks
    */
-  private final String JSON_URL = "http://appinventor-alexa.csail.mit.edu/stockPrices.php";
+  private final String JSON_URL = "https://appinventor-alexa.csail.mit.edu/stockPrices.php";
 
   /**
    * This is the entry point method.
@@ -56,7 +56,7 @@ public class TestSmapiJava implements EntryPoint {
     // Add the nameField and sendButton to the RootPanel
     // Use RootPanel.get() to get the entire body element
     // RootPanel.get("nameFieldContainer").add(nameField);
-    RootPanel.get("getButtonContainer").add(getButton);
+    RootPanel.get("buttonContainer").add(getButton);
     RootPanel.get("errorLabelContainer").add(errorLabel);
 
     // Focus the cursor on the name field when the app loads
