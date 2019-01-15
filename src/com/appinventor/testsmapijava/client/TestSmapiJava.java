@@ -20,6 +20,8 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.core.client.JsArray;
 
+import com.appinventor.testsmapijava.client.MyHandler;
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -40,11 +42,14 @@ public class TestSmapiJava implements EntryPoint {
    * The url where the php code lives and serves up json callbacks
    */
   private final String JSON_URL = "https://appinventor-alexa.csail.mit.edu/stockPrices.php";
+  private final String TEST_URL = "https://appinventor-alexa.csail.mit.edu/test_access_token.php";
 
   /**
    * This is the entry point method.
    */
   public void onModuleLoad() {
+    final Button loginButton = new Button("LOGIN WITH AMAZON");
+    final Button logoutButton = new Button("LOGOUT OF AMAZON");
     final Button getButton = new Button("GET");
     // final TextBox nameField = new TextBox();
     // nameField.setText("GWT User");
@@ -57,6 +62,8 @@ public class TestSmapiJava implements EntryPoint {
     // Use RootPanel.get() to get the entire body element
     // RootPanel.get("nameFieldContainer").add(nameField);
     RootPanel.get("buttonContainer").add(getButton);
+    RootPanel.get("buttonContainer").add(loginButton);
+    RootPanel.get("buttonContainer").add(logoutButton);
     RootPanel.get("errorLabelContainer").add(errorLabel);
 
     // Focus the cursor on the name field when the app loads
@@ -87,101 +94,19 @@ public class TestSmapiJava implements EntryPoint {
       public void onClick(ClickEvent event) {
         dialogBox.hide();
         getButton.setEnabled(true);
+	loginButton.setEnabled(true);
         getButton.setFocus(true);
       }
     });
 
-    // Create a handler for the sendButton and nameField
-    class MyHandler implements ClickHandler, KeyUpHandler {
-      /**
-       * Fired when the user clicks on the sendButton.
-       */
-      public void onClick(ClickEvent event) {
-        getReq();
-      }
-
-      /**
-       * Fired when the user types in the nameField.
-       */
-      public void onKeyUp(KeyUpEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-          getReq();
-        }
-      }
-
-      /**
-       * Send the name from the nameField to the server and wait for a response.
-       */
-      private void getReq() {
-        // First, we validate the input.
-        errorLabel.setText("");
-        // String textToServer = nameField.getText();
-        // if (!FieldVerifier.isValidName(textToServer)) {
-        // errorLabel.setText("Please enter at least four characters");
-        // return;
-        // }
-
-        // Then, we send the input to the server.
-        getButton.setEnabled(false);
-        String todoTest = "test1";
-        textToServerLabel.setText(todoTest);
-        serverResponseLabel.setText("");
-        // greetingService.greetServer(todoTest, new AsyncCallback<String>() {
-        // public void onFailure(Throwable caught) {
-        // // Show the RPC error message to the user
-        // dialogBox.setText("Remote Procedure Call - Failure");
-        // serverResponseLabel.addStyleName("serverResponseLabelError");
-        // serverResponseLabel.setHTML(SERVER_ERROR);
-        // dialogBox.center();
-        // closeButton.setFocus(true);
-        // }
-
-        // public void onSuccess(String result) {
-        // dialogBox.setText("Remote Procedure Call");
-        // serverResponseLabel.removeStyleName("serverResponseLabelError");
-        // serverResponseLabel.setHTML(result);
-        // dialogBox.center();
-        // closeButton.setFocus(true);
-        // }
-        // });
-        String url = JSON_URL;
-        url += "?q=ABC&callback=callback29";
-        url = URL.encode(url);
-
-        JsonpRequestBuilder builder = new JsonpRequestBuilder();
-        builder.requestObject(url, new AsyncCallback<JsArray<StockDataTodoDel>>() {
-          public void onFailure(Throwable caught) {
-            displayError("Couldn't retrieve JSON");
-          }
-
-          public void onSuccess(JsArray<StockDataTodoDel> data) {
-            displayTodoObj(data);
-          }
-        });
-      }
-
-      private void displayError(String msg) {
-        dialogBox.setText("Remote Procedure Call - Failure");
-        serverResponseLabel.addStyleName("serverResponseLabelError");
-        serverResponseLabel.setHTML(SERVER_ERROR);
-        dialogBox.center();
-        closeButton.setFocus(true);
-      }
-
-      private void displayTodoObj(JsArray<StockDataTodoDel> data) {
-        dialogBox.setText("Remote Procedure Call");
-        serverResponseLabel.removeStyleName("serverResponseLabelError");
-
-        serverResponseLabel.setHTML("Symbol: " + data.get(0).getSymbol() + " Price: " + data.get(0).getPrice()
-            + " Change: " + data.get(0).getChange());
-        dialogBox.center();
-        closeButton.setFocus(true);
-      }
-    }
-
     // Add a handler to send the name to the server
-    MyHandler handler = new MyHandler();
-    getButton.addClickHandler(handler);
+    String getQuery = "?q=ABC&callback=callback29";
+    MyHandler getBtnHandler = new MyHandler(getButton, JSON_URL, getQuery, SERVER_ERROR, textToServerLabel, serverResponseLabel, errorLabel, closeButton, dialogBox);
+    getButton.addClickHandler(getBtnHandler);
+
+    String loginQuery = "?q=hello&callback=cb";
+    MyHandler loginBtnHandler = new MyHandler(loginButton, TEST_URL, loginQuery, SERVER_ERROR, textToServerLabel, serverResponseLabel, errorLabel, closeButton, dialogBox);
+    loginButton.addClickHandler(loginBtnHandler);
     // nameField.addKeyUpHandler(handler);
   }
 }
