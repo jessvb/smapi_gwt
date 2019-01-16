@@ -120,11 +120,7 @@ public class MyHandler implements ClickHandler, KeyUpHandler {
 
    private void displayObj(AccessTokenInfo data) {
      dialogBox.setText("Remote Procedure Call");
-     serverResponseLabel.removeStyleName("serverResponseLabelError");
-
-     AmazonSdk amazon = new AmazonSdk(AmazonClientId.getClientId());
-     amazon.loginAmazon(); // NOTE: need to allow pop-ups for this to occur
-    
+     serverResponseLabel.removeStyleName("serverResponseLabelError"); 
      // TODO: remove the following comments 
      // serverResponseLabel.setHTML("Access Token: " + data.getAccessToken() + "\nRefresh Token: " + data.getRefreshToken() + "\nToken Type: " + data.getTokenType() + "\nExpire Time: " + data.getExpireTime());
     // serverResponseLabel.setHTML("data.getAccessTokenUrl(): " + data.getAccessTokenUrl() + "\nClientID: " + data.getClientId() + "\nAccessTokenUrl: " + data.getAccessTokenUrl() + "\nAuthUrl: " + data.getAuthorizationUrl());

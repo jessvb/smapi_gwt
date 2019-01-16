@@ -39,7 +39,7 @@ public class AmazonSdk {
 	    }-*/;
 
   public final native void logoutAmazon() /*-{
-				       // TODO
+    $wnd.amazon.Login.logout();
 				       }-*/;
 
 }

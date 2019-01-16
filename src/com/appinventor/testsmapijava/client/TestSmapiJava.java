@@ -39,6 +39,11 @@ public class TestSmapiJava implements EntryPoint {
   private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
   /**
+   * Make an AmazonSdk object to interact with Login with Amazon
+   */
+   private final AmazonSdk amazon = new AmazonSdk(AmazonClientId.getClientId());
+
+  /**
    * The url where the php code lives and serves up json callbacks
    */
   private final String JSON_URL = "https://appinventor-alexa.csail.mit.edu/stockPrices.php";
@@ -98,15 +103,24 @@ public class TestSmapiJava implements EntryPoint {
         getButton.setFocus(true);
       }
     });
+ 
+    // Add a handler to the logout button
+    logoutButton.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        amazon.logoutAmazon();
+      }
+    });
+    
+    // Add a handler to the login button
+    loginButton.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        amazon.loginAmazon(); // NOTE: need to allow pop-ups for this to occur
+      }
+    });
 
     // Add a handler to send the name to the server
     String getQuery = "?q=ABC&callback=callback29";
     MyHandler getBtnHandler = new MyHandler(getButton, JSON_URL, getQuery, SERVER_ERROR, textToServerLabel, serverResponseLabel, errorLabel, closeButton, dialogBox);
-    getButton.addClickHandler(getBtnHandler);
-
-    String loginQuery = "?q=hello&callback=cb";
-    MyHandler loginBtnHandler = new MyHandler(loginButton, TEST_URL, loginQuery, SERVER_ERROR, textToServerLabel, serverResponseLabel, errorLabel, closeButton, dialogBox);
-    loginButton.addClickHandler(loginBtnHandler);
-    // nameField.addKeyUpHandler(handler);
+    getButton.addClickHandler(getBtnHandler); 
   }
 }
