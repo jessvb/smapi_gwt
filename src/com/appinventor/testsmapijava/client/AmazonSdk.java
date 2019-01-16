@@ -1,11 +1,23 @@
 package com.appinventor.testsmapijava.client;
 
 public class AmazonSdk {
-
+  /*
+   * Amazon access token is for future calls to the Login with Amazon SDK
+   * with the same user that logged in. 
+   */
+  private String accessToken;
+ 
+  /*
+   * Constructor calls JSNI method that initializes the Amazon SDK in 
+   * javascript.
+   */ 
   public AmazonSdk(String clientID) {
       initializeAmazonSdk(clientID);
   }
 
+  /*
+   * Initializes the Amazon SDK javascript library.
+   */
   private final native void initializeAmazonSdk(String clientID) /*-{ 
     // TODO: for some reason, I can't access $wnd.amazon if I only put the following code here :( I have to actually put this code in the HTML DOM for it to work... --> Figure out how to only have this code in this file (not nec. in the HTML) 
     $wnd.onAmazonLoginReady = function() {
@@ -22,9 +34,10 @@ public class AmazonSdk {
     })(document);
   }-*/;
  
-
-  // Typically, methods on overlay types are JSNI
-  public final native String loginAmazon() /*-{ 
+  /*
+   * Calls for a pop-up that allows Amazon users to log in.
+   */
+  public final native void loginAmazon() /*-{ 
 	    options = {
                 scope: 'profile',
                 state: '~jessicav/test_smapi/index.html' // TODO
@@ -33,11 +46,14 @@ public class AmazonSdk {
                 if (response.error) {
                     alert('oauth error ' + response.error);
                     return;
-                }
+                } else {
+                  // TODO add callback here with response.access_token
+		}
 	    });
-            return 'TODO RETURN'; // TODO add callback to Java
 	    }-*/;
-
+  /*
+   * Logs the user out of their Amazon account on this website.
+   */
   public final native void logoutAmazon() /*-{
     $wnd.amazon.Login.logout();
 				       }-*/;
