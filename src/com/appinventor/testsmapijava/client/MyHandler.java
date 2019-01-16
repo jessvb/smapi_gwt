@@ -98,7 +98,6 @@ public class MyHandler implements ClickHandler, KeyUpHandler {
      url = URL.encode(url);
 
      JsonpRequestBuilder builder = new JsonpRequestBuilder();
-     //builder.requestObject(url, new AsyncCallback<JsArray<StockDataTodoDel>>() {
      //builder.requestObject(url, new AsyncCallback<AccountInfo>() {
      builder.requestObject(url, new AsyncCallback<AccessTokenInfo>() {
        public void onFailure(Throwable caught) {
@@ -123,7 +122,11 @@ public class MyHandler implements ClickHandler, KeyUpHandler {
      dialogBox.setText("Remote Procedure Call");
      serverResponseLabel.removeStyleName("serverResponseLabelError");
 
-     serverResponseLabel.setHTML("Access Token: " + data.getAccessToken() + "\nRefresh Token: " + data.getRefreshToken() + "\nToken Type: " + data.getTokenType() + "\nExpire Time: " + data.getExpireTime());
+     AmazonSdk amazon = new AmazonSdk(AmazonClientId.getClientId());
+     amazon.loginAmazon(); // NOTE: need to allow pop-ups for this to occur
+    
+     // TODO: remove the following comments 
+     // serverResponseLabel.setHTML("Access Token: " + data.getAccessToken() + "\nRefresh Token: " + data.getRefreshToken() + "\nToken Type: " + data.getTokenType() + "\nExpire Time: " + data.getExpireTime());
     // serverResponseLabel.setHTML("data.getAccessTokenUrl(): " + data.getAccessTokenUrl() + "\nClientID: " + data.getClientId() + "\nAccessTokenUrl: " + data.getAccessTokenUrl() + "\nAuthUrl: " + data.getAuthorizationUrl());
    //  serverResponseLabel.setHTML("Symbol: " + data.get(0).getSymbol() + " Price: " + data.get(0).getPrice()
    //      + " Change: " + data.get(0).getChange());

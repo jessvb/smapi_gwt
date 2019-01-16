@@ -89,3 +89,5 @@ client-id.js
 compilation-mappings.txt
 testsmapijava.devmode.js
 testsmapijava.nocache.js
+*.swp
+AmazonClientId.java
