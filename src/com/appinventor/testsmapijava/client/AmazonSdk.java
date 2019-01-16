@@ -38,19 +38,29 @@ public class AmazonSdk {
    * Calls for a pop-up that allows Amazon users to log in.
    */
   public final native void loginAmazon() /*-{ 
-	    options = {
-                scope: 'profile',
-                state: '~jessicav/test_smapi/index.html' // TODO
-            };
-            $wnd.amazon.Login.authorize(options, function (response) {
-                if (response.error) {
-                    alert('oauth error ' + response.error);
-                    return;
-                } else {
-                  // TODO add callback here with response.access_token
-		}
-	    });
-	    }-*/;
+    // save "this" so that we can call a java fxn on this instance later
+    var self = this;
+    options = {
+        scope: 'profile',
+        state: '~jessicav/test_smapi/index.html' // TODO
+    };
+    $wnd.amazon.Login.authorize(options, function (response) {
+        if (response.error) {
+            alert('oauth error ' + response.error);
+            return;
+        } else {
+	self.@com.appinventor.testsmapijava.client.AmazonSdk::saveAccessToken(Ljava/lang/String;)(response.access_token);
+	}
+    });
+    }-*/;
+  
+  /*
+   * Stores the access token from Login with Amazon
+   */
+  private void saveAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
   /*
    * Logs the user out of their Amazon account on this website.
    */
