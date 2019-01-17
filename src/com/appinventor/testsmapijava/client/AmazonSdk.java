@@ -1,5 +1,13 @@
 package com.appinventor.testsmapijava.client;
 
+// For requesting a JSON from PHP file:
+import com.google.gwt.jsonp.client.JsonpRequestBuilder;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import com.google.gwt.user.client.Window;
+
 public class AmazonSdk {
   /*
    * Amazon access token is for future calls to the Login with Amazon SDK
@@ -62,10 +70,46 @@ public class AmazonSdk {
   }
 
   /*
+   * Logs the user out of their Amazon account on this website by calling
+   * a native JSNI method, and removes the previously-saved access token.
+   */
+  public void logoutAmazon() {
+    this.accessToken = null;
+    this.logoutAmazonJsni();
+  }
+
+  /*
    * Logs the user out of their Amazon account on this website.
    */
-  public final native void logoutAmazon() /*-{
+  private final native void logoutAmazonJsni() /*-{
     $wnd.amazon.Login.logout();
 				       }-*/;
+
+  public String[] getNameEmailUserid() {
+    // From https://developer.amazon.com/docs/login-with-amazon/obtain-customer-profile.html
+    // Let a PHP script make a call to the Amazon server and return user info
+    
+    if (accessToken != null) {
+      // TODO: make real url etc.
+      String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonUserInfo.php?callback=cb";
+     JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+     
+     builder.requestObject(phpUrl, new AsyncCallback<AccessTokenInfo>() {
+       public void onFailure(Throwable caught) {
+         Window.alert("Couldn't retrieve JSON");
+       }
+
+       public void onSuccess(AccessTokenInfo data) {
+         Window.alert("Access Token: " + data.getAccessToken() +"\nRefresh Token: " + data.getRefreshToken() + "\nToken Type: " + data.getTokenType() + "\nExpire Time: " + data.getExpireTime());
+       }
+     });
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+  
+
+    String[] nameEmailUserid = {"TODO name", "TODO email", "TODO user id"};
+    return nameEmailUserid;
+  }
 
 }

@@ -118,9 +118,11 @@ public class TestSmapiJava implements EntryPoint {
       }
     });
 
-    // Add a handler to send the name to the server
-    String getQuery = "?q=ABC&callback=callback29";
-    MyHandler getBtnHandler = new MyHandler(getButton, JSON_URL, getQuery, SERVER_ERROR, textToServerLabel, serverResponseLabel, errorLabel, closeButton, dialogBox);
-    getButton.addClickHandler(getBtnHandler); 
+    // Add a handler for the GET button
+    getButton.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+	    amazon.getNameEmailUserid();
+	}
+    }); 
   }
 }
