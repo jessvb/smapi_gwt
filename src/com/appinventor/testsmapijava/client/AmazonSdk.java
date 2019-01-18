@@ -85,31 +85,33 @@ public class AmazonSdk {
     $wnd.amazon.Login.logout();
 				       }-*/;
 
-  public String[] getNameEmailUserid() {
+  public void getNameEmailUserid() {
     // From https://developer.amazon.com/docs/login-with-amazon/obtain-customer-profile.html
     // Let a PHP script make a call to the Amazon server and return user info
     
     if (accessToken != null) {
-      // TODO: make real url etc.
-      String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonUserInfo.php?callback=cb";
+      String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonUserInfo.php?callback=cb&accessToken=" + accessToken;
      JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
      
-     builder.requestObject(phpUrl, new AsyncCallback<AccessTokenInfo>() {
+     builder.requestObject(phpUrl, new AsyncCallback<UserInfo>() {
        public void onFailure(Throwable caught) {
          Window.alert("Couldn't retrieve JSON");
        }
 
-       public void onSuccess(AccessTokenInfo data) {
-         Window.alert("Access Token: " + data.getAccessToken() +"\nRefresh Token: " + data.getRefreshToken() + "\nToken Type: " + data.getTokenType() + "\nExpire Time: " + data.getExpireTime());
+       public void onSuccess(UserInfo data) {
+        if (data.getError() != null) {
+		Window.alert("Error retrieving user info: " + data.getError());
+	 } else {
+	 	Window.alert("user_id: " + data.getUserId() +"\nEmail: " + data.getEmail() + "\nName: " + data.getName() + "\nPostal Code: " + data.getPostalCode());
+	 }
        }
      });
    } else {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
   
-
-    String[] nameEmailUserid = {"TODO name", "TODO email", "TODO user id"};
-    return nameEmailUserid;
+    // String[] nameEmailUserid = {data.getName(), data.getEmail(), data.getUserId()};
+    // return nameEmailUserid;
   }
 
 }
