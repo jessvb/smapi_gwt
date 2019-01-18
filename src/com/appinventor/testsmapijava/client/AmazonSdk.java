@@ -110,8 +110,37 @@ public class AmazonSdk {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
   
-    // String[] nameEmailUserid = {data.getName(), data.getEmail(), data.getUserId()};
+   // TODO: delete: 
+   // String[] nameEmailUserid = {data.getName(), data.getEmail(), data.getUserId()};
     // return nameEmailUserid;
+  }
+
+
+  public void getSkillInfo() {
+	  // From https://developer.amazon.com/docs/smapi/account-linking-operations.html
+	  // Let a PHP script make a call to the Amazon server and return user info
+    
+    if (accessToken != null) {
+	    Window.alert("There's an access token!");
+	    //TODO: String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonUserInfo.php?callback=cb&accessToken=" + accessToken;
+    // JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+    // 
+    // builder.requestObject(phpUrl, new AsyncCallback<UserInfo>() {
+    //   public void onFailure(Throwable caught) {
+    //     Window.alert("Couldn't retrieve JSON");
+    //   }
+
+    //   public void onSuccess(UserInfo data) {
+    //    if (data.getError() != null) {
+    //    	Window.alert("Error retrieving user info: " + data.getError());
+    //     } else {
+    //     	Window.alert("user_id: " + data.getUserId() +"\nEmail: " + data.getEmail() + "\nName: " + data.getName() + "\nPostal Code: " + data.getPostalCode());
+    //     }
+    //   }
+    // });
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
   }
 
 }

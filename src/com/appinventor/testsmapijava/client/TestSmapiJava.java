@@ -55,18 +55,20 @@ public class TestSmapiJava implements EntryPoint {
   public void onModuleLoad() {
     final Button loginButton = new Button("LOGIN WITH AMAZON");
     final Button logoutButton = new Button("LOGOUT OF AMAZON");
-    final Button getButton = new Button("GET");
+    final Button getUserInfoBtn = new Button("Get User Info");
+    final Button getSkillBtn = new Button("Get Skill Info");
     // final TextBox nameField = new TextBox();
     // nameField.setText("GWT User");
     final Label errorLabel = new Label();
 
-    // We can add style names to widgets
-    getButton.addStyleName("getButton");
+    // We can add style names to widgets TODO: delete
+    // getUserInfoBtn.addStyleName("getUserInfoBtn");
 
     // Add the nameField and sendButton to the RootPanel
     // Use RootPanel.get() to get the entire body element
     // RootPanel.get("nameFieldContainer").add(nameField);
-    RootPanel.get("buttonContainer").add(getButton);
+    RootPanel.get("buttonContainer").add(getUserInfoBtn);
+    RootPanel.get("buttonContainer").add(getSkillBtn);
     RootPanel.get("buttonContainer").add(loginButton);
     RootPanel.get("buttonContainer").add(logoutButton);
     RootPanel.get("errorLabelContainer").add(errorLabel);
@@ -98,9 +100,10 @@ public class TestSmapiJava implements EntryPoint {
     closeButton.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         dialogBox.hide();
-        getButton.setEnabled(true);
+        getUserInfoBtn.setEnabled(true);
+        getSkillBtn.setEnabled(true);
 	loginButton.setEnabled(true);
-        getButton.setFocus(true);
+        getUserInfoBtn.setFocus(true);
       }
     });
  
@@ -118,11 +121,19 @@ public class TestSmapiJava implements EntryPoint {
       }
     });
 
-    // Add a handler for the GET button
-    getButton.addClickHandler(new ClickHandler() {
+    // Add a handler for the get user info button
+    getUserInfoBtn.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
 	    amazon.getNameEmailUserid();
 	}
     }); 
+
+    // Add a handler for the get skill info button
+    getSkillBtn.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+	    amazon.getSkillInfo();
+	}
+    }); 
+    
   }
 }
