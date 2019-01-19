@@ -3,6 +3,7 @@ package com.appinventor.testsmapijava.client;
 // For requesting a JSON from PHP file:
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -49,8 +50,7 @@ public class AmazonSdk {
     // save "this" so that we can call a java fxn on this instance later
     var self = this;
     options = {
-        scope: 'profile',
-        state: '~jessicav/test_smapi/index.html' // TODO
+        scope: 'profile alexa::ask:skills:readwrite alexa::ask:models:readwrite alexa::ask:skills:test'
     };
     $wnd.amazon.Login.authorize(options, function (response) {
         if (response.error) {
@@ -121,23 +121,31 @@ public class AmazonSdk {
 	  // Let a PHP script make a call to the Amazon server and return user info
     
     if (accessToken != null) {
-	    Window.alert("There's an access token!");
-	    //TODO: String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonUserInfo.php?callback=cb&accessToken=" + accessToken;
-    // JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
-    // 
-    // builder.requestObject(phpUrl, new AsyncCallback<UserInfo>() {
-    //   public void onFailure(Throwable caught) {
-    //     Window.alert("Couldn't retrieve JSON");
-    //   }
+	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/amazonVendorId.php?callback=cb&accessToken=" + accessToken;
+     JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+     
+     builder.requestObject(phpUrl, new AsyncCallback<VendorIdInfo>() {
+       public void onFailure(Throwable caught) {
+         Window.alert("Couldn't retrieve JSON");
+       }
 
-    //   public void onSuccess(UserInfo data) {
-    //    if (data.getError() != null) {
-    //    	Window.alert("Error retrieving user info: " + data.getError());
-    //     } else {
-    //     	Window.alert("user_id: " + data.getUserId() +"\nEmail: " + data.getEmail() + "\nName: " + data.getName() + "\nPostal Code: " + data.getPostalCode());
-    //     }
-    //   }
-    // });
+       public void onSuccess(VendorIdInfo data) {
+        if (data.getError() != null) {
+        	Window.alert("Error retrieving user info: " + data.getError());
+	} else if (data.getMessage() != null) {
+	 	Window.alert("Error: " + data.getMessage());
+	} else {
+         	 // TODO: deal with the case of multiple vendor ids... 
+		 String allInfo = "";
+		 allInfo += "Vendor Id: " + data.getVendorId();
+		 allInfo += "\nName: " + data.getName();
+		 allInfo += "\nRoles: " + data.getRoles();
+		 allInfo += "\n";
+		 
+		 Window.alert(allInfo);
+        }
+      }
+     });
    } else {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
