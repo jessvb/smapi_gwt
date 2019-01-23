@@ -131,7 +131,8 @@ public class TestSmapiJava implements EntryPoint {
     // Add a handler for the get skill info button
     getSkillBtn.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
-	    amazon.getSkillInfo();
+	    //TODO: remove: amazon.getVendorId();
+	    amazon.listSkills(null,null);
 	}
     }); 
     

@@ -17,6 +17,10 @@ public class AmazonSdk {
   private String accessToken;
  
   /*
+   * Amazon vendor ID is for Alexa skills requests.
+   */
+  private String vendorId;
+  /*
    * Constructor calls JSNI method that initializes the Amazon SDK in 
    * javascript.
    */ 
@@ -75,6 +79,7 @@ public class AmazonSdk {
    */
   public void logoutAmazon() {
     this.accessToken = null;
+    this.vendorId = null;
     this.logoutAmazonJsni();
   }
 
@@ -116,7 +121,7 @@ public class AmazonSdk {
   }
 
 
-  public void getSkillInfo() {
+  public void getVendorId() {
 	  // From https://developer.amazon.com/docs/smapi/account-linking-operations.html
 	  // Let a PHP script make a call to the Amazon server and return user info
     
@@ -136,19 +141,77 @@ public class AmazonSdk {
 	 	Window.alert("Error: " + data.getMessage());
 	} else {
          	 // TODO: deal with the case of multiple vendor ids... 
-		 String allInfo = "";
-		 allInfo += "Vendor Id: " + data.getVendorId();
-		 allInfo += "\nName: " + data.getName();
-		 allInfo += "\nRoles: " + data.getRoles();
-		 allInfo += "\n";
-		 
-		 Window.alert(allInfo);
-        }
-      }
+	//	 String allInfo = "";
+	//	 allInfo += "Vendor Id: " + data.getVendorId();
+	//	 allInfo += "\nName: " + data.getName();
+	//	 allInfo += "\nRoles: " + data.getRoles();
+	//	 allInfo += "\n";
+	//	 
+	//	 Window.alert(allInfo);
+        	setVendorId(data.getVendorId());
+		Window.alert("set vendor id: "+vendorId);
+	}
+       }
      });
    } else {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
   }
 
+  private void setVendorId(String vendorId) {
+	  this.vendorId = vendorId;
+  }
+
+  public void listSkills(Integer maxSkills, String nextToken) {
+    if (accessToken != null) {
+	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_get.php?callback=cb&accessToken=" + accessToken;
+	    if(vendorId == null) {
+		getVendorId();
+		Window.alert("got vendorId");
+	    }
+	    Window.alert("vendorId: "+vendorId);
+	   // check for the case where you try to get the vendor id, but there's an error:
+	   if (vendorId != null) { 
+		// build the url:
+     		phpUrl += "&dir=/v1/skills";
+		phpUrl += "&q=vendorId=" + vendorId;
+		if (maxSkills != null) {
+			phpUrl += "%26maxResults=" + maxSkills;
+		}
+		if (nextToken != null) {
+			phpUrl += "%26nextToken=" + nextToken;
+		}
+
+		// TODO DEL: use this in getting a skill status
+		//phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_get.php?callback=cb&accessToken=" + accessToken + "&dir=/v1/skills/amzn1.ask.skill.9d619d79-4a9d-4bf7-975e-b6a0c8786bd1/status" + "&q=resource=interactionModel"; 
+
+		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+     
+     		builder.requestObject(phpUrl, new AsyncCallback<SkillsInfo>() {
+       			public void onFailure(Throwable caught) {
+        	 		Window.alert("Couldn't retrieve JSON");
+       			}
+
+       			public void onSuccess(SkillsInfo data) {
+       				 if (data.getError() != null) {
+       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 } else if (data.getMessage() != null) {
+       				  	Window.alert("Error: " + data.getMessage());
+       				 } else {
+					String allInfo = "";
+					for (int i = 0; i < data.getSkillNames().length(); i++) {
+						allInfo += "Skill" + i + " Name: " + data.getSkillNames().get(i) + "\n";
+						allInfo += "Skill" + i + " ID: " + data.getSkillIds().get(i) + "\n";
+					}
+
+       				 	 Window.alert(allInfo);
+       				 }
+     			 }
+     		});
+	   }
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+    
+  }
 }
