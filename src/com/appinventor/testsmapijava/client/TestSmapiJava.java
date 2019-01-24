@@ -57,6 +57,7 @@ public class TestSmapiJava implements EntryPoint {
     final Button logoutButton = new Button("LOGOUT OF AMAZON");
     final Button getUserInfoBtn = new Button("Get User Info");
     final Button getSkillBtn = new Button("Get Skill Info");
+    final Button createSkillBtn = new Button("Create Skill");
     // final TextBox nameField = new TextBox();
     // nameField.setText("GWT User");
     final Label errorLabel = new Label();
@@ -69,6 +70,7 @@ public class TestSmapiJava implements EntryPoint {
     // RootPanel.get("nameFieldContainer").add(nameField);
     RootPanel.get("buttonContainer").add(getUserInfoBtn);
     RootPanel.get("buttonContainer").add(getSkillBtn);
+    RootPanel.get("buttonContainer").add(createSkillBtn);
     RootPanel.get("buttonContainer").add(loginButton);
     RootPanel.get("buttonContainer").add(logoutButton);
     RootPanel.get("errorLabelContainer").add(errorLabel);
@@ -102,6 +104,7 @@ public class TestSmapiJava implements EntryPoint {
         dialogBox.hide();
         getUserInfoBtn.setEnabled(true);
         getSkillBtn.setEnabled(true);
+	createSkillBtn.setEnabled(true);	
 	loginButton.setEnabled(true);
         getUserInfoBtn.setFocus(true);
       }
@@ -131,10 +134,20 @@ public class TestSmapiJava implements EntryPoint {
     // Add a handler for the get skill info button
     getSkillBtn.addClickHandler(new ClickHandler() {
         public void onClick(ClickEvent event) {
-	    //TODO: remove: amazon.getVendorId();
 	    amazon.listSkills(null,null);
 	}
     }); 
-    
+
+    // Add handler for the create skill button
+    createSkillBtn.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+		// Note that the vendorId will be replaced within the createSkill() method
+	 	String jsonVui = "{\"vendorId\": \"IAMZORILLA\",\"manifest\": {\"publishingInformation\": {\"locales\": {\"en-US\": {\"summary\": \"This is a sample Alexa skill.\",\"examplePhrases\": [\"Alexa, open sample skill.\",\"Alexa, turn on kitchen lights.\",\"Alexa, blink kitchen lights.\"],\"keywords\": [\"Smart Home\",\"Lights\",\"Smart Devices\"],\"name\": \"Sample custom skill name.\",\"description\": \"This skill has basic and advanced smart devices control features.\"}},\"isAvailableWorldwide\": false,\"testingInstructions\": \"1) Say 'Alexa, discover my devices' 2) Say 'Alexa, turn on sample lights'\",\"category\": \"SMART_HOME\",\"distributionCountries\": [\"US\",\"GB\"]},\"apis\": {\"custom\": {\"endpoint\": {\"uri\": \"arn:aws:lambda:us-east-1:032174894474:function:ask-custom-custome_cert\"}}},\"manifestVersion\": \"1.0\",\"privacyAndCompliance\": {\"allowsPurchases\": false,\"locales\": {\"en-US\": {\"termsOfUseUrl\": \"http://www.termsofuse.sampleskill.com\",\"privacyPolicyUrl\": \"http://www.myprivacypolicy.sampleskill.com\"}},\"isExportCompliant\": true,\"isChildDirected\": false,\"usesPersonalInfo\": false}}}";			
+			
+		amazon.createSkill(jsonVui);
+	}
+    }); 
+
+
   }
 }

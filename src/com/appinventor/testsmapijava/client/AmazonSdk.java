@@ -203,7 +203,9 @@ public class AmazonSdk {
 						allInfo += "Skill" + i + " Name: " + data.getSkillNames().get(i) + "\n";
 						allInfo += "Skill" + i + " ID: " + data.getSkillIds().get(i) + "\n";
 					}
-
+					if (allInfo == "") {
+						allInfo = "No skills created.";
+					}
        				 	 Window.alert(allInfo);
        				 }
      			 }
@@ -214,4 +216,57 @@ public class AmazonSdk {
    } 
     
   }
+
+  public void createSkill(String jsonVui) {
+    if (accessToken != null) {
+	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_post.php?callback=cb&accessToken=" + accessToken;
+	    // get vendorId if we don't have it, and add it to the url
+	    if(vendorId == null) {
+		getVendorId();
+		Window.alert("got vendorId");
+	    }
+	    Window.alert("vendorId: "+vendorId);
+	   // check for the case where you try to get the vendor id, but there's an error:
+	   if (vendorId != null) { 
+		// build the url:
+     		phpUrl += "&dir=/v1/skills";
+		phpUrl += "&vendorId=" + vendorId;
+		phpUrl += "&json=";
+		// Need to encode the json so that we can send it in the uri
+		// try {
+			phpUrl += URL.encode(jsonVui);
+//		} catch (IOException e) {
+//			Window.alert("Error encoding JSON: " + e.toString());
+//		}
+		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+     
+     		builder.requestObject(phpUrl, new AsyncCallback<SkillsInfo>() {
+       			public void onFailure(Throwable caught) {
+        	 		Window.alert("Couldn't retrieve JSON");
+       			}
+
+       			public void onSuccess(SkillsInfo data) {
+       				 if (data.getError() != null) {
+       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 } else if (data.getMessage() != null) {
+       				  	Window.alert("Error: " + data.getMessage());
+       				 } else {
+			Window.alert("Success!");
+					 //		String allInfo = "";
+			//		for (int i = 0; i < data.getSkillNames().length(); i++) {
+			//			allInfo += "Skill" + i + " Name: " + data.getSkillNames().get(i) + "\n";
+			//			allInfo += "Skill" + i + " ID: " + data.getSkillIds().get(i) + "\n";
+			//		}
+
+       			//	 	 Window.alert(allInfo);
+       				 }
+     			 }
+     		});
+	   }
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+    
+  }
+
 }
