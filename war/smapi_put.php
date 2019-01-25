@@ -7,12 +7,6 @@
   $accessToken = trim($_GET['accessToken']);
   $dir = trim($_GET['dir']); // e.g., dir='/v1/skills/{skillid}'
   $json_str = trim($_GET['json']); // e.g., json="{this:"is technically just a string"}"
-  $vendorId = trim($_GET['vendorId']);
-
-  // Update the vendorId TODO remove
-//  $json = json_decode($json_str);
-//  $json->vendorId = $vendorId;
-//  $json_str = json_encode($json);
 
  // echo $json_str;
   // Ensure validity of access token
