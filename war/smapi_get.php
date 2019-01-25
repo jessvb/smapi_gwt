@@ -18,19 +18,26 @@
  $testAuthJson = json_decode($testAuthJson);
 // echo $testAuthJson->{'aud'};
 
+ // Test authenticity of auth token
  if ($testAuthJson->{'aud'} != 'amzn1.application-oa2-client.74c0b384f93146cdb0b5d0c40bbcef72') {
   echo $callback;
   echo '({"error":"Invalid token."})';
  } else {
+   // create url to make GET request
    $smapiUrl = "https://api.amazonalexa.com" . $dir;
    if (!empty($q)) {
       $smapiUrl .= "?" . $q;
    }
+
+   // set options for GET request
    $auth = "Authorization: Bearer ".$accessToken;
    curl_setopt($ch, CURLOPT_URL, $smapiUrl);
    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $auth));
+
+   // make GET request
    $output = curl_exec($ch);
-  
+
+   // output results as a callback function for javascript
    echo $callback;
    echo '(';
    echo $output;
