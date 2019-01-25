@@ -7,6 +7,7 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.Stack;
+import java.util.EmptyStackException;
 
 import com.google.gwt.user.client.Window;
 
@@ -120,11 +121,7 @@ public class AmazonSdk {
      });
    } else {
      Window.alert("Please login to Amazon. (No access token.)");
-   } 
-  
-   // TODO: delete: 
-   // String[] nameEmailUserid = {data.getName(), data.getEmail(), data.getUserId()};
-    // return nameEmailUserid;
+   }
   }
 
 
@@ -239,12 +236,8 @@ public class AmazonSdk {
      		phpUrl += "&dir=/v1/skills";
 		phpUrl += "&vendorId=" + vendorId;
 		phpUrl += "&json=";
-		// Need to encode the json so that we can send it in the uri
-		// try {
-			phpUrl += URL.encode(jsonVui);
-//		} catch (IOException e) {
-//			Window.alert("Error encoding JSON: " + e.toString());
-//		}
+		phpUrl += URL.encode(jsonVui);
+		
 		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
      
      		builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
@@ -274,6 +267,80 @@ public class AmazonSdk {
     
   }
 
+  /*
+   * Deletes the most recent skill created using the most recent skill id 
+   * on the createdSkills stack.
+   */
+  public void deleteLastSkill () {
+	Window.alert("deleting last skill...");
+	// check for empty stack:
+	try {
+		// the "true" in deleteSkill() causes the last skill to be popped off
+		deleteSkill(createdSkills.peek(), true);
+	} catch (EmptyStackException e) { 
+		Window.alert("No skills created this session. Can't delete last skill.");
+	}
+  }
+
+  /*
+   * Deletes skill using the skillId provided. 
+   */
+  public void deleteSkill(String skillId) {
+  	// note that if this skill is in the createdSkills stack, it won't 
+	// be popped off the stack (and if you try to delete it later using 
+	// deleteLastSkill, you may run into an error). 
+	  deleteSkill(skillId, false);	
+  }
+
+  /*
+   * Deletes skill using the skillId provided. If popLastSkill is set to true, 
+   * the most recently created skill will be popped off of the stack after 
+   * being deleted.
+   */
+  private void deleteSkill(String skillId, final boolean popLastSkill) {
+	Window.alert("TODO. In deleteSkill. popLastSkill: " + popLastSkill);
+	// check to make sure the user has logged in
+	if (accessToken != null) {
+	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_delete.php?callback=cb&accessToken=" + accessToken;
+	    // get vendorId if we don't have it, and add it to the url
+	    if(vendorId == null) {
+		getVendorId();
+		Window.alert("got vendorId");
+	    }
+	    Window.alert("vendorId: " + vendorId);
+	   // check for the case where you try to get the vendor id, but there's an error:
+	   if (vendorId != null) {
+		// build the url:
+     		phpUrl += "&dir=/v1/skills/" + skillId + "/";
+		phpUrl += "&vendorId=" + vendorId;
+		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
+     		
+		// make the request
+     		builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
+       			public void onFailure(Throwable caught) {
+        	 		Window.alert("Couldn't retrieve JSON");
+       			}
+
+       			public void onSuccess(SkillIdInfo data) {
+       				 if (data.getError() != null) {
+       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 } else if (data.getMessage() != null) {
+       				  	Window.alert("Error: " + data.getMessage());
+       				 } else { 
+					 // TODO: if popLastSkill=true and we run into an error BECAUSE THAT SKILL WASN'T FOUND then we still need to pop it too!! check the errors to see if this occurs, and then pop the last skill in that case
+					if (popLastSkill) {
+						createdSkills.pop();
+					}
+					Window.alert("Success!");
+				 }
+     			 }
+     		});
+	   }
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+  }
+  
   /*
    * Tests to see if the given string has the basic requirements to be 
    * an Amazon Skill ID.

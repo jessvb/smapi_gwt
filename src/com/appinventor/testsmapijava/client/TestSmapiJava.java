@@ -58,6 +58,7 @@ public class TestSmapiJava implements EntryPoint {
     final Button getUserInfoBtn = new Button("Get User Info");
     final Button getSkillBtn = new Button("Get Skill Info");
     final Button createSkillBtn = new Button("Create Skill");
+    final Button deleteLastSkillBtn = new Button("Delete Last Skill");
     // final TextBox nameField = new TextBox();
     // nameField.setText("GWT User");
     final Label errorLabel = new Label();
@@ -70,6 +71,8 @@ public class TestSmapiJava implements EntryPoint {
     // RootPanel.get("nameFieldContainer").add(nameField);
     RootPanel.get("buttonContainer").add(getUserInfoBtn);
     RootPanel.get("buttonContainer").add(getSkillBtn);
+    // TODO: get delete skill working ...
+    // RootPanel.get("buttonContainer").add(deleteLastSkillBtn);
     RootPanel.get("buttonContainer").add(createSkillBtn);
     RootPanel.get("buttonContainer").add(loginButton);
     RootPanel.get("buttonContainer").add(logoutButton);
@@ -105,6 +108,7 @@ public class TestSmapiJava implements EntryPoint {
         getUserInfoBtn.setEnabled(true);
         getSkillBtn.setEnabled(true);
 	createSkillBtn.setEnabled(true);	
+	deleteLastSkillBtn.setEnabled(true);	
 	loginButton.setEnabled(true);
         getUserInfoBtn.setFocus(true);
       }
@@ -148,6 +152,12 @@ public class TestSmapiJava implements EntryPoint {
 	}
     }); 
 
+    // Add a handler for the delete last skill button
+    deleteLastSkillBtn.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+	    amazon.deleteLastSkill();
+	}
+    }); 
 
   }
 }
