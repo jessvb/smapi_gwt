@@ -221,7 +221,7 @@ public class AmazonSdk {
     
   }
 
-  public void createSkill(String jsonVui) {
+  public void createSkill(String jsonManifest) {
     if (accessToken != null) {
 	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_post.php?callback=cb&accessToken=" + accessToken;
 	    // get vendorId if we don't have it, and add it to the url
@@ -236,7 +236,7 @@ public class AmazonSdk {
      		phpUrl += "&dir=/v1/skills";
 		phpUrl += "&vendorId=" + vendorId;
 		phpUrl += "&json=";
-		phpUrl += URL.encode(jsonVui);
+		phpUrl += URL.encode(jsonManifest);
 		
 		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
      
@@ -257,6 +257,50 @@ public class AmazonSdk {
 					} else {
 						Window.alert("New skill ID is incorrect: " + data.getId() + ". Please try again.");
 					}
+				 }
+     			 }
+     		});
+	   }
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+    
+  }
+  
+  /*
+   * Updates an existing skill's manifest  with the skill ID, skillId, and 
+   * the manifest, jsonManifest.
+   */
+  public void updateSkillManifest(String skillId, String jsonManifest) {
+    if (accessToken != null) {
+	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_put.php?callback=cb&accessToken=" + accessToken;
+	    // get vendorId if we don't have it, and add it to the url
+	    if(vendorId == null) {
+		getVendorId();
+		Window.alert("got vendorId");
+	    }
+	    Window.alert("vendorId: "+vendorId);
+	   // check for the case where you try to get the vendor id, but there's an error:
+	   if (vendorId != null) { 
+		// build the url:
+     		phpUrl += "&dir=/v1/skills/" + skillId + "/stages/development/manifest";
+		phpUrl += "&vendorId=" + vendorId;
+		phpUrl += "&json=";
+		phpUrl += URL.encode(jsonManifest);
+		
+		JsonpRequestBuilder builder = new JsonpRequestBuilder();  
+     		builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
+       			public void onFailure(Throwable caught) {
+        	 		Window.alert("Couldn't retrieve JSON");
+       			}
+
+       			public void onSuccess(SkillIdInfo data) {
+       				 if (data.getError() != null) {
+       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 } else if (data.getMessage() != null) {
+       				  	Window.alert("Error: " + data.getMessage());
+       				 } else {
+       					Window.alert("Success! The skill manifest was updated.");
 				 }
      			 }
      		});
@@ -340,7 +384,21 @@ public class AmazonSdk {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
   }
-  
+
+  /*
+   * Returns the most recent skillId. Returns null if no skills were created
+   * in this session.
+   */
+  public String getLastSkillIdCreated() {
+	String skillId = null;
+	// check for empty stack:
+	try {
+		skillId = createdSkills.peek();
+	} catch (EmptyStackException e) { 
+	}
+	return skillId;	
+  }
+
   /*
    * Tests to see if the given string has the basic requirements to be 
    * an Amazon Skill ID.
