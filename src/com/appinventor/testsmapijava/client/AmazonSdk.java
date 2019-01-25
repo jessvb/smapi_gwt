@@ -6,6 +6,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Stack;
 
 import com.google.gwt.user.client.Window;
 
@@ -20,6 +21,12 @@ public class AmazonSdk {
    * Amazon vendor ID is for Alexa skills requests.
    */
   private String vendorId;
+  
+  /*
+   * Stack of most recently created skill ids.
+   */
+  private Stack<String> createdSkills = new Stack<String>(); 
+  
   /*
    * Constructor calls JSNI method that initializes the Amazon SDK in 
    * javascript.
@@ -240,26 +247,24 @@ public class AmazonSdk {
 //		}
 		JsonpRequestBuilder builder = new JsonpRequestBuilder(); 
      
-     		builder.requestObject(phpUrl, new AsyncCallback<SkillsInfo>() {
+     		builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
        			public void onFailure(Throwable caught) {
         	 		Window.alert("Couldn't retrieve JSON");
        			}
 
-       			public void onSuccess(SkillsInfo data) {
+       			public void onSuccess(SkillIdInfo data) {
        				 if (data.getError() != null) {
        				 	Window.alert("Error retrieving user info: " + data.getError());
        				 } else if (data.getMessage() != null) {
        				  	Window.alert("Error: " + data.getMessage());
        				 } else {
-			Window.alert("Success!");
-					 //		String allInfo = "";
-			//		for (int i = 0; i < data.getSkillNames().length(); i++) {
-			//			allInfo += "Skill" + i + " Name: " + data.getSkillNames().get(i) + "\n";
-			//			allInfo += "Skill" + i + " ID: " + data.getSkillIds().get(i) + "\n";
-			//		}
-
-       			//	 	 Window.alert(allInfo);
-       				 }
+					if (isSkillId(data.getId())) {
+       						Window.alert("New Skill ID: " + data.getId());
+						createdSkills.push(data.getId());
+					} else {
+						Window.alert("New skill ID is incorrect: " + data.getId() + ". Please try again.");
+					}
+				 }
      			 }
      		});
 	   }
@@ -267,6 +272,27 @@ public class AmazonSdk {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
     
+  }
+
+  /*
+   * Tests to see if the given string has the basic requirements to be 
+   * an Amazon Skill ID.
+   */
+  private boolean isSkillId(String id) {
+	boolean isId = true;
+	if(!id.contains(".")) {
+		isId = false;
+	} else {
+       		String[] idParts = id.split("\\.");
+		if (idParts.length != 4) {
+			isId = false;
+		} else {
+			if (!idParts[0].equals("amzn1") || !idParts[1].equals("ask") || !idParts[2].equals("skill")) {
+				isId = false;
+			}
+		}
+	}
+	return isId;
   }
 
 }
