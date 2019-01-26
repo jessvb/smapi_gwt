@@ -140,7 +140,7 @@ public class AmazonSdk {
 
        public void onSuccess(VendorIdInfo data) {
         if (data.getError() != null) {
-        	Window.alert("Error retrieving user info: " + data.getError());
+        	Window.alert("Error retrieving vendor ID: " + data.getError());
 	} else if (data.getMessage() != null) {
 	 	Window.alert("Error: " + data.getMessage());
 	} else {
@@ -198,7 +198,7 @@ public class AmazonSdk {
 
        			public void onSuccess(SkillsInfo data) {
        				 if (data.getError() != null) {
-       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 	Window.alert("Error retrieving skill info: " + data.getError());
        				 } else if (data.getMessage() != null) {
        				  	Window.alert("Error: " + data.getMessage());
        				 } else {
@@ -247,7 +247,7 @@ public class AmazonSdk {
 
        			public void onSuccess(SkillIdInfo data) {
        				 if (data.getError() != null) {
-       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 	Window.alert("Error creating skill: " + data.getError());
        				 } else if (data.getMessage() != null) {
        				  	Window.alert("Error: " + data.getMessage());
        				 } else {
@@ -273,43 +273,79 @@ public class AmazonSdk {
    */
   public void updateSkillManifest(String skillId, String jsonManifest) {
     if (accessToken != null) {
-	    String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_put.php?callback=cb&accessToken=" + accessToken;
-	    // get vendorId if we don't have it, and add it to the url
-	    if(vendorId == null) {
-		getVendorId();
-		Window.alert("got vendorId");
-	    }
-	    Window.alert("vendorId: "+vendorId);
-	   // check for the case where you try to get the vendor id, but there's an error:
-	   if (vendorId != null) { 
-		// build the url:
-     		phpUrl += "&dir=/v1/skills/" + skillId + "/stages/development/manifest";
-		phpUrl += "&vendorId=" + vendorId;
-		phpUrl += "&json=";
-		phpUrl += URL.encode(jsonManifest);
-		
-		JsonpRequestBuilder builder = new JsonpRequestBuilder();  
-     		builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
-       			public void onFailure(Throwable caught) {
-        	 		Window.alert("Couldn't retrieve JSON");
-       			}
+	String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_put.php?callback=cb&accessToken=" + accessToken;
+	// build the url:
+	phpUrl += "&dir=/v1/skills/" + skillId + "/stages/development/manifest";
+	phpUrl += "&vendorId=" + vendorId;
+	phpUrl += "&json=";
+	phpUrl += URL.encode(jsonManifest);
+	
+	JsonpRequestBuilder builder = new JsonpRequestBuilder();  
+	builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
+		public void onFailure(Throwable caught) {
+	 		Window.alert("Couldn't retrieve JSON");
+		}
 
-       			public void onSuccess(SkillIdInfo data) {
-       				 if (data.getError() != null) {
-       				 	Window.alert("Error retrieving user info: " + data.getError());
-       				 } else if (data.getMessage() != null) {
-       				  	Window.alert("Error: " + data.getMessage());
-       				 } else {
-       					Window.alert("Success! The skill manifest was updated.");
-				 }
-     			 }
-     		});
-	   }
+		public void onSuccess(SkillIdInfo data) {
+			 if (data.getError() != null) {
+			 	Window.alert("Error retrieving updating manifest: " + data.getError());
+			 } else if (data.getMessage() != null) {
+			  	Window.alert("Error: " + data.getMessage());
+			 } else {
+				Window.alert("Success! The skill manifest was updated.");
+			 }
+		 }
+	});
+   
    } else {
      Window.alert("Please login to Amazon. (No access token.)");
    } 
     
   }
+
+  /*
+   * Updates an existing skill's interaction model (VUI) with the skill ID,
+   * skillId, and the interaction model, jsonVui.
+   * TODO: refactor this to be more generic such that you can PUT either a 
+   * manifest or an interaction model (e.g., updateSkill(skillId, json, type) 
+   */
+  public void updateSkillInteractionModel(String skillId, String jsonVui) {
+    if (accessToken != null) {
+	String phpUrl = "https://appinventor-alexa.csail.mit.edu/smapi_gwt/gwt-2.8.2/TestSmapiJava/war/smapi_put.php?callback=cb&accessToken=" + accessToken;
+	// build the url:
+	phpUrl += "&dir=/v1/skills/" + skillId + "/stages/development/interactionModel/locales/en-US"; // TODO: update to be used for other locales
+	phpUrl += "&json=";
+	phpUrl += URL.encode(jsonVui);
+	
+	JsonpRequestBuilder builder = new JsonpRequestBuilder();  
+	builder.requestObject(phpUrl, new AsyncCallback<ErrorInfo>() {
+		public void onFailure(Throwable caught) {
+	 		Window.alert("Couldn't retrieve JSON");
+		}
+
+		public void onSuccess(ErrorInfo data) {
+			 if (data.getError() != null) {
+			 	Window.alert("Error updating interaction model: " + data.getError());
+			 } else if (data.getMessage() != null) {
+			  	Window.alert("Error: " + data.getMessage());
+				// let the user know all violation msgs
+				String violMsgs = "";
+				JsArrayString violArr = data.getViolations();
+				for (int i = 0; i < violArr.length(); i++) {
+					violMsgs += "Violation" + i + ": " + violArr.get(i);
+				}
+				Window.alert(violMsgs);
+			 } else {
+				Window.alert("Success! The skill interaction model was updated.");
+			 }
+		 }
+	});
+   } else {
+     Window.alert("Please login to Amazon. (No access token.)");
+   } 
+    
+  }
+
 
   /*
    * Deletes the most recent skill created using the most recent skill id 
@@ -367,7 +403,7 @@ public class AmazonSdk {
 
        			public void onSuccess(SkillIdInfo data) {
        				 if (data.getError() != null) {
-       				 	Window.alert("Error retrieving user info: " + data.getError());
+       				 	Window.alert("Error deleting skill: " + data.getError());
        				 } else if (data.getMessage() != null) {
        				  	Window.alert("Error: " + data.getMessage());
        				 } else { 
