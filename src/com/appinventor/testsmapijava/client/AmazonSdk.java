@@ -281,16 +281,23 @@ public class AmazonSdk {
 	phpUrl += URL.encode(jsonManifest);
 	
 	JsonpRequestBuilder builder = new JsonpRequestBuilder();  
-	builder.requestObject(phpUrl, new AsyncCallback<SkillIdInfo>() {
+	builder.requestObject(phpUrl, new AsyncCallback<ErrorInfo>() {
 		public void onFailure(Throwable caught) {
 	 		Window.alert("Couldn't retrieve JSON");
 		}
 
-		public void onSuccess(SkillIdInfo data) {
+		public void onSuccess(ErrorInfo data) {
 			 if (data.getError() != null) {
 			 	Window.alert("Error retrieving updating manifest: " + data.getError());
 			 } else if (data.getMessage() != null) {
 			  	Window.alert("Error: " + data.getMessage());
+				// let the user know all violation msgs
+				String violMsgs = "";
+				JsArrayString violArr = data.getViolations();
+				for (int i = 0; i < violArr.length(); i++) {
+					violMsgs += "Violation" + i + ": " + violArr.get(i);
+				}
+				Window.alert(violMsgs);
 			 } else {
 				Window.alert("Success! The skill manifest was updated.");
 			 }
