@@ -5,68 +5,68 @@
 <!-- with a "Quirks Mode" doctype is not supported. -->
 
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <!--                                                               -->
-    <!-- Consider inlining CSS to reduce the number of requested files -->
-    <!--                                                               -->
-    <link type="text/css" rel="stylesheet" href="TestSmapiJava.css">
+        <!--                                                               -->
+        <!-- Consider inlining CSS to reduce the number of requested files -->
+        <!--                                                               -->
+        <link type="text/css" rel="stylesheet" href="TestSmapiJava.css">
+
+        <!--                                           -->
+        <!-- Any title is fine                         -->
+        <!--                                           -->
+        <title>Web Application Starter Project</title>
+
+        <!--                                           -->
+        <!-- This script loads your compiled module.   -->
+        <!-- If you add any GWT meta tags, they must   -->
+        <!-- be added before this line.                -->
+        <!--                                           -->
+        <script type="text/javascript" language="javascript" src="testsmapijava/testsmapijava.nocache.js"></script>
+
+        <!-- Load the client-id number  -->
+        <script type="text/javascript" language="javascript" src="client-id.js"></script>
+
+    </head>
 
     <!--                                           -->
-    <!-- Any title is fine                         -->
+    <!-- The body can have arbitrary html, or      -->
+    <!-- you can leave the body empty if you want  -->
+    <!-- to create a completely dynamic UI.        -->
     <!--                                           -->
-    <title>Web Application Starter Project</title>
-    
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
-    <script type="text/javascript" language="javascript" src="testsmapijava/testsmapijava.nocache.js"></script>
-    
-    <!-- Load the client-id number  -->
-    <script type="text/javascript" language="javascript" src="client-id.js"></script>
-  
-  </head>
+    <body>
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                           -->
-  <body>
+        <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+        <noscript>
+            <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+                Your web browser must have JavaScript enabled
+                in order for this application to display correctly.
+            </div>
+        </noscript>
 
-    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-    <noscript>
-      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
-      </div>
-    </noscript>
+        <h1>Test SMAPI</h1>
 
-    <h1>Test SMAPI</h1>
-    
-    <div id=buttonContainer></div>
-    <div id=errorLabelContainer></div>
+        <div id=buttonContainer></div>
+        <div id=errorLabelContainer></div>
 
-    <!-- For Login with Amazon -->
-    <!-- https://developer.amazon.com/docs/login-with-amazon/install-sdk-javascript.html -->
-    <div id="amazon-root"></div>
-    <script type="text/javascript">
-        window.onAmazonLoginReady = function () {
-            amazon.Login.setClientId(getClientId());
-	};
-        (function (d) {
-            var a = d.createElement('script');
-            a.type = 'text/javascript';
-            a.async = true;
-            a.id = 'amazon-login-sdk';
-            a.src = 'https://assets.loginwithamazon.com/sdk/na/login1.js';
-            d.getElementById('amazon-root').appendChild(a);
-        })(document);
-    </script>
-    <!-- end login with amazon -->
-   
-  </body>
+        <!-- For Login with Amazon -->
+        <!-- https://developer.amazon.com/docs/login-with-amazon/install-sdk-javascript.html -->
+        <div id="amazon-root"></div>
+        <script type="text/javascript">
+            window.onAmazonLoginReady = function () {
+                amazon.Login.setClientId(getClientId());
+            };
+(function (d) {
+    var a = d.createElement('script');
+    a.type = 'text/javascript';
+    a.async = true;
+    a.id = 'amazon-login-sdk';
+    a.src = 'https://assets.loginwithamazon.com/sdk/na/login1.js';
+    d.getElementById('amazon-root').appendChild(a);
+})(document);
+        </script>
+        <!-- end login with amazon -->
+
+    </body>
 </html>

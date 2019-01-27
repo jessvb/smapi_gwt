@@ -28,172 +28,172 @@ import com.appinventor.testsmapijava.client.MyHandler;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class TestSmapiJava implements EntryPoint {
-  /**
-   * The message displayed to the user when the server cannot be reached or
-   * returns an error.
-   */
-  private static final String SERVER_ERROR = "An error occurred while "
-      + "attempting to contact the server. Please check your network " + "connection and try again.";
+    /**
+     * The message displayed to the user when the server cannot be reached or
+     * returns an error.
+     */
+    private static final String SERVER_ERROR = "An error occurred while "
+        + "attempting to contact the server. Please check your network " + "connection and try again.";
 
-  /**
-   * Create a remote service proxy to talk to the server-side Greeting service.
-   */
-  private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+    /**
+     * Create a remote service proxy to talk to the server-side Greeting service.
+     */
+    private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
-  /**
-   * Make an AmazonSdk object to interact with Login with Amazon
-   */
-   private final AmazonSdk amazon = new AmazonSdk(AmazonClientId.getClientId());
+    /**
+     * Make an AmazonSdk object to interact with Login with Amazon
+     */
+    private final AmazonSdk amazon = new AmazonSdk(AmazonClientId.getClientId());
 
-  /**
-   * The url where the php code lives and serves up json callbacks
-   */
-  private final String JSON_URL = "https://appinventor-alexa.csail.mit.edu/stockPrices.php";
-  private final String TEST_URL = "https://appinventor-alexa.csail.mit.edu/test_access_token.php";
+    /**
+     * The url where the php code lives and serves up json callbacks
+     */
+    private final String JSON_URL = "https://appinventor-alexa.csail.mit.edu/stockPrices.php";
+    private final String TEST_URL = "https://appinventor-alexa.csail.mit.edu/test_access_token.php";
 
-  /**
-   * This is the entry point method.
-   */
-  public void onModuleLoad() {
-    final Button loginButton = new Button("LOGIN WITH AMAZON");
-    final Button logoutButton = new Button("LOGOUT OF AMAZON");
-    final Button getUserInfoBtn = new Button("Get User Info");
-    final Button getSkillBtn = new Button("Get Skill Info");
-    final Button createSkillBtn = new Button("Create Skill");
-    final Button updateManifestBtn = new Button("Update Skill Manifest");
-    final Button updateInteractionModelBtn = new Button("Update Skill Interaction Model");
-    final Button deleteLastSkillBtn = new Button("Delete Last Skill");
-    // final TextBox nameField = new TextBox();
-    // nameField.setText("GWT User");
-    final Label errorLabel = new Label();
+    /**
+     * This is the entry point method.
+     */
+    public void onModuleLoad() {
+        final Button loginButton = new Button("LOGIN WITH AMAZON");
+        final Button logoutButton = new Button("LOGOUT OF AMAZON");
+        final Button getUserInfoBtn = new Button("Get User Info");
+        final Button getSkillBtn = new Button("Get Skill Info");
+        final Button createSkillBtn = new Button("Create Skill");
+        final Button updateManifestBtn = new Button("Update Skill Manifest");
+        final Button updateInteractionModelBtn = new Button("Update Skill Interaction Model");
+        final Button deleteLastSkillBtn = new Button("Delete Last Skill");
+        // final TextBox nameField = new TextBox();
+        // nameField.setText("GWT User");
+        final Label errorLabel = new Label();
 
-    // We can add style names to widgets TODO: delete
-    // getUserInfoBtn.addStyleName("getUserInfoBtn");
+        // We can add style names to widgets TODO: delete
+        // getUserInfoBtn.addStyleName("getUserInfoBtn");
 
-    // Add the nameField and sendButton to the RootPanel
-    // Use RootPanel.get() to get the entire body element
-    // RootPanel.get("nameFieldContainer").add(nameField);
-    RootPanel.get("buttonContainer").add(getUserInfoBtn);
-    RootPanel.get("buttonContainer").add(getSkillBtn);
-    // TODO: get delete skill working ...
-    // RootPanel.get("buttonContainer").add(deleteLastSkillBtn);
-    RootPanel.get("buttonContainer").add(createSkillBtn);
-    RootPanel.get("buttonContainer").add(updateManifestBtn);
-    RootPanel.get("buttonContainer").add(updateInteractionModelBtn);
-    RootPanel.get("buttonContainer").add(loginButton);
-    RootPanel.get("buttonContainer").add(logoutButton);
-    RootPanel.get("errorLabelContainer").add(errorLabel);
+        // Add the nameField and sendButton to the RootPanel
+        // Use RootPanel.get() to get the entire body element
+        // RootPanel.get("nameFieldContainer").add(nameField);
+        RootPanel.get("buttonContainer").add(getUserInfoBtn);
+        RootPanel.get("buttonContainer").add(getSkillBtn);
+        // TODO: get delete skill working ...
+        // RootPanel.get("buttonContainer").add(deleteLastSkillBtn);
+        RootPanel.get("buttonContainer").add(createSkillBtn);
+        RootPanel.get("buttonContainer").add(updateManifestBtn);
+        RootPanel.get("buttonContainer").add(updateInteractionModelBtn);
+        RootPanel.get("buttonContainer").add(loginButton);
+        RootPanel.get("buttonContainer").add(logoutButton);
+        RootPanel.get("errorLabelContainer").add(errorLabel);
 
-    // Focus the cursor on the name field when the app loads
-    // nameField.setFocus(true);
-    // nameField.selectAll();
+        // Focus the cursor on the name field when the app loads
+        // nameField.setFocus(true);
+        // nameField.selectAll();
 
-    // Create the popup dialog box
-    final DialogBox dialogBox = new DialogBox();
-    dialogBox.setText("Remote Procedure Call");
-    dialogBox.setAnimationEnabled(true);
-    final Button closeButton = new Button("Close");
-    // We can set the id of a widget by accessing its Element
-    closeButton.getElement().setId("closeButton");
-    final Label textToServerLabel = new Label();
-    final HTML serverResponseLabel = new HTML();
-    VerticalPanel dialogVPanel = new VerticalPanel();
-    dialogVPanel.addStyleName("dialogVPanel");
-    dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-    dialogVPanel.add(textToServerLabel);
-    dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-    dialogVPanel.add(serverResponseLabel);
-    dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-    dialogVPanel.add(closeButton);
-    dialogBox.setWidget(dialogVPanel);
+        // Create the popup dialog box
+        final DialogBox dialogBox = new DialogBox();
+        dialogBox.setText("Remote Procedure Call");
+        dialogBox.setAnimationEnabled(true);
+        final Button closeButton = new Button("Close");
+        // We can set the id of a widget by accessing its Element
+        closeButton.getElement().setId("closeButton");
+        final Label textToServerLabel = new Label();
+        final HTML serverResponseLabel = new HTML();
+        VerticalPanel dialogVPanel = new VerticalPanel();
+        dialogVPanel.addStyleName("dialogVPanel");
+        dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
+        dialogVPanel.add(textToServerLabel);
+        dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
+        dialogVPanel.add(serverResponseLabel);
+        dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+        dialogVPanel.add(closeButton);
+        dialogBox.setWidget(dialogVPanel);
 
-    // Add a handler to close the DialogBox
-    closeButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        dialogBox.hide();
-        getUserInfoBtn.setEnabled(true);
-        getSkillBtn.setEnabled(true);
-	createSkillBtn.setEnabled(true);	
-	updateManifestBtn.setEnabled(true);	
-	updateInteractionModelBtn.setEnabled(true);	
-	deleteLastSkillBtn.setEnabled(true);	
-	loginButton.setEnabled(true);
-        getUserInfoBtn.setFocus(true);
-      }
-    });
- 
-    // Add a handler to the logout button
-    logoutButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        amazon.logoutAmazon();
-      }
-    });
-    
-    // Add a handler to the login button
-    loginButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        amazon.loginAmazon(); // NOTE: need to allow pop-ups for this to occur
-      }
-    });
+        // Add a handler to close the DialogBox
+        closeButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                dialogBox.hide();
+                getUserInfoBtn.setEnabled(true);
+                getSkillBtn.setEnabled(true);
+                createSkillBtn.setEnabled(true);	
+                updateManifestBtn.setEnabled(true);	
+                updateInteractionModelBtn.setEnabled(true);	
+                deleteLastSkillBtn.setEnabled(true);	
+                loginButton.setEnabled(true);
+                getUserInfoBtn.setFocus(true);
+            }
+        });
 
-    // Add a handler for the get user info button
-    getUserInfoBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-	    amazon.getNameEmailUserid();
-	}
-    }); 
+        // Add a handler to the logout button
+        logoutButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                amazon.logoutAmazon();
+            }
+        });
 
-    // Add a handler for the get skill info button
-    getSkillBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-	    amazon.listSkills(null,null);
-	}
-    }); 
+        // Add a handler to the login button
+        loginButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                amazon.loginAmazon(); // NOTE: need to allow pop-ups for this to occur
+            }
+        });
 
-    // Add handler for the create skill button
-    createSkillBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-		// Note that the vendorId will be replaced within the createSkill() method
-	 	String jsonManifest = "{\"vendorId\": \"IAMZORILLA\",\"manifest\": {\"publishingInformation\": {\"locales\": {\"en-US\": {\"summary\": \"This is a sample Alexa skill.\",\"examplePhrases\": [\"Alexa, open sample skill.\",\"Alexa, turn on kitchen lights.\",\"Alexa, blink kitchen lights.\"],\"keywords\": [\"Smart Home\",\"Lights\",\"Smart Devices\"],\"name\": \"Sample custom skill name.\",\"description\": \"This skill has basic and advanced smart devices control features.\"}},\"isAvailableWorldwide\": false,\"testingInstructions\": \"1) Say 'Alexa, discover my devices' 2) Say 'Alexa, turn on sample lights'\",\"category\": \"SMART_HOME\",\"distributionCountries\": [\"US\",\"GB\"]},\"apis\": {\"custom\": {\"endpoint\": {\"uri\": \"arn:aws:lambda:us-east-1:032174894474:function:ask-custom-custome_cert\"}}},\"manifestVersion\": \"1.0\",\"privacyAndCompliance\": {\"allowsPurchases\": false,\"locales\": {\"en-US\": {\"termsOfUseUrl\": \"http://www.termsofuse.sampleskill.com\",\"privacyPolicyUrl\": \"http://www.myprivacypolicy.sampleskill.com\"}},\"isExportCompliant\": true,\"isChildDirected\": false,\"usesPersonalInfo\": false}}}";			
-			
-		amazon.createSkill(jsonManifest);
-	}
-    }); 
+        // Add a handler for the get user info button
+        getUserInfoBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                amazon.getNameEmailUserid();
+            }
+        }); 
 
-    // Add handler for the update skill manifest button
-    updateManifestBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-	 	String jsonManifest = "{\"manifest\": {\"publishingInformation\": {\"locales\": {\"en-US\": {\"summary\": \"This is a NEWLY IMPROVED SUPER DUPER Alexa skill!\",\"examplePhrases\": [\"Alexa, open my pet zorilla skill.\",\"Alexa, I want to play with my pet zorilla.\",\"Alexa, how's my zorilla doing?\"],\"keywords\": [\"Zorilla\",\"Pet\",\"Animals\"],\"name\": \"Sample custom skill name.\",\"description\": \"This skill has basic and advanced smart devices control features.\"}},\"isAvailableWorldwide\": false,\"testingInstructions\": \"1) Say 'Alexa, discover my devices' 2) Say 'Alexa, turn on sample lights'\",\"category\": \"SMART_HOME\",\"distributionCountries\": [\"US\",\"GB\"]},\"apis\": {\"custom\": {\"endpoint\": {\"uri\": \"arn:aws:lambda:us-east-1:032174894474:function:ask-custom-custome_cert\"}}},\"manifestVersion\": \"1.0\",\"privacyAndCompliance\": {\"allowsPurchases\": false,\"locales\": {\"en-US\": {\"termsOfUseUrl\": \"http://www.termsofuse.sampleskill.com\",\"privacyPolicyUrl\": \"http://www.myprivacypolicy.sampleskill.com\"}},\"isExportCompliant\": true,\"isChildDirected\": false,\"usesPersonalInfo\": false}}}";			
-		String skillId = amazon.getLastSkillIdCreated();
-		if (skillId != null) {		
-			amazon.updateSkillManifest(skillId, jsonManifest);
-		} else {
-			Window.alert("No skills recently created. Create a new skill, and then you can update it.");
-		}
-	}
-   }); 
+        // Add a handler for the get skill info button
+        getSkillBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                amazon.listSkills(null,null);
+            }
+        }); 
 
-    // Add handler for the update skill interaction model button
-    updateInteractionModelBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-	 	String jsonVui = "{\"interactionModel\":{\"languageModel\":{\"invocationName\":\"zorilla cool\",\"intents\":[{\"name\":\"AMAZON.CancelIntent\",\"samples\":[]},{\"name\":\"AMAZON.HelpIntent\",\"samples\":[]},{\"name\":\"AMAZON.StopIntent\",\"samples\":[]},{\"name\":\"AMAZON.NavigateHomeIntent\",\"samples\":[]},{\"name\":\"AMAZON.FallbackIntent\",\"samples\":[]},{\"name\":\"GetNewFactIntent\",\"slots\":[],\"samples\":[\"tell me something about zorillas\",\"are zorillas cool\",\"how cool are zorillas\",\"is anything cooler than a zorilla\",\"why would you want anything other than a zorilla\",\"xmazing zorilla\",\"are zorillas xmazing\",\"what's the most xmazing zorilla that you've ever seen\",\"do you know any xmazing zorillas\",\"tell me about your xmazing zorillas\",\"what do you know about xmazing zorillas\",\"are you xmazing\",\"are you a zorilla\",\"xmazing zorillas fiveever\"]}],\"types\":[]}}}";
-		String skillId = amazon.getLastSkillIdCreated();
-		if (skillId != null) {
-			amazon.updateSkillInteractionModel(skillId, jsonVui);
-		} else {
-			Window.alert("No skills recently created. Create a new skill, and then you can update it.");
-		}
-	}
-   }); 
+        // Add handler for the create skill button
+        createSkillBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                // Note that the vendorId will be replaced within the createSkill() method
+                String jsonManifest = "{\"vendorId\": \"IAMZORILLA\",\"manifest\": {\"publishingInformation\": {\"locales\": {\"en-US\": {\"summary\": \"This is a sample Alexa skill.\",\"examplePhrases\": [\"Alexa, open sample skill.\",\"Alexa, turn on kitchen lights.\",\"Alexa, blink kitchen lights.\"],\"keywords\": [\"Smart Home\",\"Lights\",\"Smart Devices\"],\"name\": \"Sample custom skill name.\",\"description\": \"This skill has basic and advanced smart devices control features.\"}},\"isAvailableWorldwide\": false,\"testingInstructions\": \"1) Say 'Alexa, discover my devices' 2) Say 'Alexa, turn on sample lights'\",\"category\": \"SMART_HOME\",\"distributionCountries\": [\"US\",\"GB\"]},\"apis\": {\"custom\": {\"endpoint\": {\"uri\": \"arn:aws:lambda:us-east-1:032174894474:function:ask-custom-custome_cert\"}}},\"manifestVersion\": \"1.0\",\"privacyAndCompliance\": {\"allowsPurchases\": false,\"locales\": {\"en-US\": {\"termsOfUseUrl\": \"http://www.termsofuse.sampleskill.com\",\"privacyPolicyUrl\": \"http://www.myprivacypolicy.sampleskill.com\"}},\"isExportCompliant\": true,\"isChildDirected\": false,\"usesPersonalInfo\": false}}}";			
+
+                amazon.createSkill(jsonManifest);
+            }
+        }); 
+
+        // Add handler for the update skill manifest button
+        updateManifestBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                String jsonManifest = "{\"manifest\": {\"publishingInformation\": {\"locales\": {\"en-US\": {\"summary\": \"This is a NEWLY IMPROVED SUPER DUPER Alexa skill!\",\"examplePhrases\": [\"Alexa, open my pet zorilla skill.\",\"Alexa, I want to play with my pet zorilla.\",\"Alexa, how's my zorilla doing?\"],\"keywords\": [\"Zorilla\",\"Pet\",\"Animals\"],\"name\": \"Sample custom skill name.\",\"description\": \"This skill has basic and advanced smart devices control features.\"}},\"isAvailableWorldwide\": false,\"testingInstructions\": \"1) Say 'Alexa, discover my devices' 2) Say 'Alexa, turn on sample lights'\",\"category\": \"SMART_HOME\",\"distributionCountries\": [\"US\",\"GB\"]},\"apis\": {\"custom\": {\"endpoint\": {\"uri\": \"arn:aws:lambda:us-east-1:032174894474:function:ask-custom-custome_cert\"}}},\"manifestVersion\": \"1.0\",\"privacyAndCompliance\": {\"allowsPurchases\": false,\"locales\": {\"en-US\": {\"termsOfUseUrl\": \"http://www.termsofuse.sampleskill.com\",\"privacyPolicyUrl\": \"http://www.myprivacypolicy.sampleskill.com\"}},\"isExportCompliant\": true,\"isChildDirected\": false,\"usesPersonalInfo\": false}}}";			
+                String skillId = amazon.getLastSkillIdCreated();
+                if (skillId != null) {		
+                    amazon.updateSkillManifest(skillId, jsonManifest);
+                } else {
+                    Window.alert("No skills recently created. Create a new skill, and then you can update it.");
+                }
+            }
+        }); 
+
+        // Add handler for the update skill interaction model button
+        updateInteractionModelBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                String jsonVui = "{\"interactionModel\":{\"languageModel\":{\"invocationName\":\"zorilla cool\",\"intents\":[{\"name\":\"AMAZON.CancelIntent\",\"samples\":[]},{\"name\":\"AMAZON.HelpIntent\",\"samples\":[]},{\"name\":\"AMAZON.StopIntent\",\"samples\":[]},{\"name\":\"AMAZON.NavigateHomeIntent\",\"samples\":[]},{\"name\":\"AMAZON.FallbackIntent\",\"samples\":[]},{\"name\":\"GetNewFactIntent\",\"slots\":[],\"samples\":[\"tell me something about zorillas\",\"are zorillas cool\",\"how cool are zorillas\",\"is anything cooler than a zorilla\",\"why would you want anything other than a zorilla\",\"xmazing zorilla\",\"are zorillas xmazing\",\"what's the most xmazing zorilla that you've ever seen\",\"do you know any xmazing zorillas\",\"tell me about your xmazing zorillas\",\"what do you know about xmazing zorillas\",\"are you xmazing\",\"are you a zorilla\",\"xmazing zorillas fiveever\"]}],\"types\":[]}}}";
+                String skillId = amazon.getLastSkillIdCreated();
+                if (skillId != null) {
+                    amazon.updateSkillInteractionModel(skillId, jsonVui);
+                } else {
+                    Window.alert("No skills recently created. Create a new skill, and then you can update it.");
+                }
+            }
+        }); 
 
 
 
-    // Add a handler for the delete last skill button
-    deleteLastSkillBtn.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-	    amazon.deleteLastSkill();
-	}
-    }); 
+        // Add a handler for the delete last skill button
+        deleteLastSkillBtn.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                amazon.deleteLastSkill();
+            }
+        }); 
 
-  }
+    }
 }
