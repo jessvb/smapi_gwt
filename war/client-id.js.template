@@ -1,0 +1,3 @@
+function getClientId() {
+    return 'string_of_client_id_from_https://sellercentral.amazon.com/hz/home'; 
+}
