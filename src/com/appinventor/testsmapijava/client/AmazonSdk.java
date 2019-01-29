@@ -33,7 +33,7 @@ public class AmazonSdk {
      * javascript.
      */ 
     public AmazonSdk(String clientID) {
-        initializeAmazonSdk(clientID);
+//        initializeAmazonSdk(clientID);
     }
 
     /*
